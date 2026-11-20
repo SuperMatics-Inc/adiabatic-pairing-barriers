@@ -1,0 +1,386 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage[hidelinks,pdfusetitle]{hyperref}
+\usepackage{microtype}
+\usepackage{enumitem}
+\newcommand{\DOI}[1]{\mbox{\href{https://doi.org/#1}{\nolinkurl{#1}}}}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+\DeclareMathOperator{\Tr}{Tr}
+\DeclareMathOperator{\spec}{spec}
+\DeclareMathOperator{\dist}{dist}
+\newcommand*{\BARRIERSPAPERDOI}{10.5281/zenodo.24384373}
+\newcommand*{\BARRIERSSUPPDOI}{10.5281/zenodo.24384385}
+\newcommand*{\BARRIERSREPO}{https://github.com/SuperMatics-Inc/adiabatic-pairing-barriers}
+\newcommand{\ifstaged}[3]{\ifx#1\empty #3\else #2\fi}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\erfc}{erfc}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\Ad}{\operatorname{Adj}}
+\newcommand{\eff}{\mathrm{eff}}
+\newcommand{\free}{\mathrm{free}}
+\newcommand{\pair}{\mathrm{pair}}
+\newcommand{\Hol}{\mathrm{Hol}}
+\newcommand{\Kinv}{\kappa_{\mathrm{inv}}}
+\newcommand{\Ggreen}{\mathcal{G}}
+\title{Determinant zeros and method-specific barriers to linear-in-frequency pairing bounds in the Holstein model}
+\author{Davis Rens\\SuperMatics Inc.\\\href{https://orcid.org/0000-0001-5839-5197}{ORCID 0000-0001-5839-5197}}
+\date{\smash{\parbox{.98\linewidth}{\centering\scriptsize
+\ifstaged{\BARRIERSPAPERDOI}{Article DOI: \expandafter\DOI\expandafter{\BARRIERSPAPERDOI}\quad}{}
+\ifstaged{\BARRIERSSUPPDOI}{Supplement DOI: \expandafter\DOI\expandafter{\BARRIERSSUPPDOI}}{}\\
+\ifstaged{\BARRIERSREPO}{Source repository: \expandafter\url\expandafter{\BARRIERSREPO}}{}
+}}}
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Can an upper bound on electronic pair-ordering temperature be improved to linear order in the phonon frequency for the spinful Holstein model at fixed hopping and coupling? Two complementary analyses identify obstructions to several natural proof routes, without ruling out such a bound for the model. First, a gap-conditioned expansion controls retarded histories at a linear temperature scale, but leaves open the Gibbs weight of static fields near the Fermi level and the corresponding buffer estimate. Second, for Holstein site fields, an explicit six-piece history on a $K_{1,3}$ star makes the single-spin determinant vanish while the dimensionless field remains at most $5$ for $\beta t=40,100,1000$. The zero obstructs a two-thirds-power estimate only within the specified sup-norm cutoff family of the published bound~\cite{linear4}, whose retained-site control is uniform over static references and whose excluded-site Peierls probabilities are taken under the free dynamic law. We also establish a power-law ceiling for Koma--Tasaki static diagonal twists, record a scoped density-diagonal Ward observation, and show non-log-concavity of the static marginal when $\beta U>2$ in the atomic limit. The remaining route is an annealed, determinant-squared-weighted bound near non-gapped clusters; it is stated as an unresolved problem, not as a result.
+\end{abstract}
+
+\section{Question, scope, and prior work}
+
+We consider the spinful square-lattice Holstein model with nearest-neighbour hopping $t>0$, one independent harmonic oscillator per site, relaxation energy $U>0$, phonon frequency $\Omega>0$, inverse temperature $\beta$, and $\tau=\beta^{-1}$. We use units in which $k_B=\hbar=1$. The chemical potential is $\mu$. The question motivating this note is whether, at fixed $t,U$ and regular density as $\Omega\downarrow0$, one can prove a ceiling for electronic pair correlations at a scale proportional to $\Omega$, improving on the established two-thirds-power adiabatic estimates. Published work on slow phonons, the two-thirds-power bound, imaginary-time methods, and the later strong-coupling analysis provide context for this question~\cite{slow,linear4,linear5,stage6}.
+
+This paper does not prove or disprove a linear-in-$\Omega$ ceiling for the full Holstein Gibbs state. It combines two sets of method-specific results. The first concerns expansions conditional on every static site field being separated from the Fermi level. The second concerns the geometry of the single-spin fermion determinant for time-dependent site fields and the limitations of specified cutoff and twist arguments. In particular, the obstruction to the $2/3$ exponent applies to one identified sup-norm cutoff family; it is not a no-go theorem for every per-history estimate. Nothing here is a material prediction, a measurement, or a claim about realized pair order.
+
+The pairing-temperature convention used in the earlier program is based on exponential clustering: it is the infimum of temperatures $\tau_0$ such that, for every $\tau\geq\tau_0$, all fixed-support electronic monomials $A_0,B_y$ of opposite nonzero even charge obey $|\langle A_0B_y\rangle|\leq c_{A,B}(\tau)e^{-m(\tau)d(0,y)}$ with positive rate and volume-independent prefactor. This note proves no unconditional ceiling under that definition; Theorem~\ref{thm:C} is conditional on the static gap.
+
+Determinant sign changes are part of the general sign problem in determinant quantum Monte Carlo (DQMC)~\cite{loh1990}. In the one-spin evolution considered here, continuity supplies a zero along a path between histories with opposite determinant signs. In the spinful formulation here, the history weight is the square of the single-spin determinant. We do not claim the sign problem itself as new; the result below gives an explicit site-field witness and quantifies a cutoff barrier.
+
+\section{Model and the one-spin evolution}
+
+Let $\Lambda$ be a finite graph of maximal degree at most four, and in lattice statements take $\Lambda$ to be a square-lattice torus. For one spin define
+\[
+ h_{W,v}(u)=-t\Ad_\Lambda+\diag(W)+\diag(v(u)),\qquad 0\leq u\leq\beta,
+\]
+where $W\in\R^\Lambda$ is an arbitrary static reference and $v:[0,\beta]\to\R^\Lambda$ is a measurable, time-mean-zero field. Let $U_{W,v}(u,0)$ solve
+\[
+ \partial_u U_{W,v}(u,0)=-h_{W,v}(u)U_{W,v}(u,0),\qquad U_{W,v}(0,0)=I,
+\]
+and write $U_{W,v}=U_{W,v}(\beta,0)$. Integrating the harmonic phonons and resolving their zero Matsubara mode gives $b_x(u)=b_{0,x}+v_x(u)$, with $W_x=b_{0,x}-\mu$. Under the free Gaussian law, $b_{0,x}$ has variance $U/\beta$; the dynamic field is centred, independent between sites, and independent of $b_0$, with $\int_0^\beta v_x(u)\,du=0$. Its equal-time variance is
+\begin{equation}\label{eq:sigma}
+ \sigma^2=\frac{U}{\beta}\left[\frac{a}{2}\coth\left(\frac a2\right)-1\right],\qquad a=\beta\Omega.
+\end{equation}
+
+For a fixed field history, the two spin species have the same one-particle evolution. The one-spin fermionic trace is $\det(1+U_{W,v})$, so the spinful history weight is proportional to $\det(1+U_{W,v})^2$. When the determinant is nonzero, put
+\[
+ G_v=(1+U_{W,v})^{-1},\qquad \Delta_x=c_{x\downarrow}c_{x\uparrow}.
+\]
+Conditional quasi-free expectations then give, for $x\ne y$,
+\begin{equation}\label{eq:pairwick}
+ \langle\Delta_x^\dagger\Delta_y\rangle_v=(G_v)_{yx}^2,
+\end{equation}
+and the diagonal entry is $(1-(G_v)_{xx})^2$. Thus poles of the normalized conditional Green function can occur at zeros of the one-spin determinant, even though the full spinful weight remains nonnegative.
+
+\begin{lemma}[A zero-free interval]\label{lem:pi}
+Let $h_0$ be a Hermitian matrix and $V(u)$ a measurable Hermitian matrix field with $\operatorname*{ess\,sup}_u\|V(u)\|=r$. If $\beta r<\pi$, then the evolution of $\partial_u\psi=-(h_0+V(u))\psi$ has no eigenvalue $-1$. If $h_0$ and $V$ are real symmetric, then $\det(1+U(\beta,0))>0$. On antiperiodic $L^2([0,\beta];\C^d)$,
+\[
+ D_V=\partial_u+h_0+V(u)
+\]
+is invertible and $\|D_V^{-1}\|\leq\beta/(\pi-\beta r)$. For $\beta r<1$, additionally $\|(1+U)^{-1}\|\leq(1-\beta r)^{-1}$.
+\end{lemma}
+
+\begin{proof}
+Diagonalizing $h_0$ and expanding antiperiodic functions in frequencies $\omega_n=(2n+1)\pi/\beta$ gives $\|D_0^{-1}\|\leq\beta/\pi$ for $D_0=\partial_u+h_0$. Multiplication by $V$ has norm at most $r$, so a Neumann-series argument yields the inverse bound. A solution with $U(\beta,0)\psi_0=-\psi_0$ would give a nonzero antiperiodic vector in the kernel of $D_V$. For real symmetric data, continuity along $sV$, $0\leq s\leq1$, preserves the sign of the determinant, which is positive at $s=0$. Finally, the antiperiodic Green kernel of $D_0$ has norm at most one away from its jump. The resolvent identity and a Neumann series on bounded kernels give the stated equal-time bound when $\beta r<1$.
+\end{proof}
+
+\section{The gap-conditioned route and static-field barriers}
+
+For a static field $b_0$, say it is $g$-gapped at $\mu$ if $|b_{0,x}-\mu|\geq g$ at every site. The theorem below controls the dynamics under this condition; it does not assert that the full Gibbs measure is concentrated on gapped configurations.
+
+\begin{theorem}[Clustering at gapped static references]\label{thm:C}
+For the pure spinful Holstein model on a torus, fix $g>0$ and suppose
+\[
+ t\leq g/64,\qquad 2^{10}\sqrt{U/g}\,\Omega\leq\tau\leq g.
+\]
+For every $g$-gapped static field $b_0$, the conditional partition function is positive and, for fixed-support electronic monomials $A_0,B_y$ of opposite nonzero even charge,
+\[
+ |\langle A_0B_y\rangle_{b_0}|\leq c_{A,B}e^{-d(0,y)/2},
+\]
+where $c_{A,B}$ is independent of volume, $\beta,\mu,b_0,t,U,\Omega,g$. The same bound holds after conditioning the Gibbs state on the event that all static fields are $g$-gapped.
+\end{theorem}
+
+\begin{proof}[Proof]
+Fix $b_0$ and put $S_x(v)=\sup_u|v_x(u)|$ and $r=g/8$. We first give the one-particle estimates used for each retained reference history. Write $W_x=b_{0,x}-\mu$, let $A$ be the square-lattice adjacency matrix, and consider on antiperiodic time-periodic $L^2([0,\beta];\ell^2(\Lambda))$
+\[
+ L=\partial_u+\operatorname{diag}(W)+\operatorname{diag}(v(u))-tA.
+\]
+For a spatial anchor $z$ and $|\alpha|\leq1$, set $E_\alpha=\operatorname{diag}(e^{\alpha d(x,z)})$ and $L_\alpha=E_\alpha L E_\alpha^{-1}$. Each row and column of $E_\alpha A E_\alpha^{-1}$ has at most four entries, each of modulus at most $e$. Since $|W_x|\geq g$ and $\|v\|_\infty\leq r$, put $g_0=7g/8$, $q=4et/g_0\leq e/14<1/4$, and $\gamma=g_0(1-q)>0$. The time-independent diagonal unitary $J=\operatorname{diag}(\operatorname{sgn}W_x)$ commutes with the time derivative and the diagonal terms. Antiperiodicity removes the boundary term, so
+\[
+ \operatorname{Re}\langle\psi,J L_\alpha\psi\rangle\geq(g_0-4et)\|\psi\|^2=\gamma\|\psi\|^2.
+\]
+The same estimate holds for $L_\alpha^*$, because the adjoint reverses the conjugation sign. Thus $L_\alpha$ is invertible and $\|L_\alpha^{-1}\|\leq\gamma^{-1}$; in particular the reference fermion determinant is nonzero.
+
+For the diagonal operator $L_d=\partial_u+\operatorname{diag}(W+v)$, its antiperiodic Green kernel is diagonal in space and satisfies $|k_x(u,s)|\leq e^{-g_0\rho_x(u,s)}$, where $\rho_x$ is the forward circular time distance if $W_x>0$ and the reverse distance if $W_x<0$. Both endpoint maps have norm at most $(2g_0)^{-1/2}$. The second resolvent identity
+\[
+ L_\alpha^{-1}=L_d^{-1}+L_d^{-1}(tA_\alpha)L_d^{-1}
+ +L_d^{-1}(tA_\alpha)L_\alpha^{-1}(tA_\alpha)L_d^{-1}
+\]
+therefore bounds every time slice, including its one-sided coincidence limits, by
+\[
+ 1+\frac q2+\frac{q^2}{2(1-q)}<2.
+\]
+Conjugating with $E_{\pm1}$ gives Combes--Thomas spatial decay at rate $1$ and weighted row and column $\ell^2$ norms at most $2$.
+
+For the Wick minors, the static one-particle operator is $h_s=\operatorname{diag}(W)-tA$. Its spectral gap is at least $g_h=g-4t\geq15g/16$, by the row-sum bound and Weyl's inequality.
+The static Green operator $C_0=(\partial_u+h_s)^{-1}$ has norm at most $1/g_h$, and its minors are at most one by the trace form of H\"older's inequality.
+The dynamic correction $-C_0v(1+C_0v)^{-1}C_0$ is a Gram kernel. Its endpoint maps have norm at most $(2g_h)^{-1/2}$. Its middle factor has norm at most $\|v\|_\infty/(1-\|v\|_\infty/g_h)$. Since $\|v\|_\infty/g_h\leq2/15$, the product of the factor norms is at most $1/13<1$.
+The wedge-product Cauchy--Schwarz inequality bounds every correction minor by one. Laplace expansion then bounds each balanced $k\times k$ Wick minor, including after positive-semidefinite diagonal-one vertex interpolation, by $4^k$.
+
+The slice estimate also gives the attachment constant $Q'=2\cdot3e<17$ for the weight $e^{d/2}$: the weighted row and column $\ell^1$ bounds are at most $6$, and transfer to the anchor costs at most $e$. These are the required uniform Wick and Combes--Thomas estimates, with no restriction on the static field beyond its gap.
+
+It remains to sum the bad-history activities. For the centred free dynamic history, the Gaussian tail estimate used in the published two-thirds-power bound~\cite{linear4} is
+\[
+ \mathbb P(S>s)\leq8\exp\!\left(-\frac{s^2}{64U\beta\Omega^2}\right)
+ \quad\text{when }\frac{s^2}{64U\beta\Omega^2}\geq16.
+\]
+Set $Y=\beta S$, $c=64U\beta^3\Omega^2$, and $l=\beta r$. The assumptions on $\tau$ imply $l\geq1/128$ and $l\geq2048c$. Thus for $y\geq l$, $y^2/c\geq2048y$, and
+\[
+ \mathbb P(S>r)\leq8e^{-2048\beta r},\qquad
+ T(r):=\mathbb E[\mathbf 1_{S>r}e^{1024\beta S}]\leq12e^{-1024\beta r}.
+\]
+For the second inequality, Tonelli's formula bounds $T(r)$ by $8e^{-1024l}+8192\int_l^\infty e^{1024y-y^2/c}\,dy$. The exponent is concave, has derivative at most $-3072$ on $[l,\infty)$, and is at most $-1024l$ at $l$, giving the displayed bound. With $r=g/8$, this yields $\mathbb P(S_x>r)\leq8e^{-256\beta g}<1$ and $T(r)\leq12e^{-128\beta g}\leq12e^{-128}$.
+
+At each site decompose the free dynamic law into its conditional laws on $S_x\leq r$ and $S_x>r$. Independence across sites makes the resulting product expansion exact. The bad-site activities, weighted by $128^m$, have total norm at most $48e^{-128}$: the tail moment above is multiplied by at most two for the logarithm and two for orientations. Consequently $Q'\sum_mw_m128^m\leq816e^{-128}<1/64$. The rooted majorant is invariant on $[0,1]$, with image below $1/4$ and room for sources. The established even-vertex tree expansion with edge weights $e^{d/2}$ gives the stated decay~\cite{linear4}. The conditional partition function is positive by invertibility of each retained reference, so positive averaging proves the assertion for the conditioned state.
+\end{proof}
+
+The remaining difficulty is the static marginal and histories near sites where $b_{0,x}\simeq\mu$. A natural target is a joint estimate of the form
+\[
+ \mathbb P_s\bigl(|b_{0,x}-\mu|<g\text{ for every }x\in B\bigr)
+ \leq e^{-c_P\beta U|B|}
+\]
+for finite sets $B$, uniformly in volume at strong-coupling and regular-density scales. A complementary buffer estimate would extend the conditional expansion through neighborhoods of non-gapped sites while controlling their histories. Neither estimate follows from the theorem above. At zero hopping the static marginal factorizes and barrier sites have positive probability; no corresponding positive-hopping, volume-uniform estimate is proved here.
+
+The exact one-site law gives more detail. Let $P_s$ be the full static marginal and $H$ the Holstein Hamiltonian including its oscillators and chemical-potential term. A Gaussian shift in the zero-mode coordinate gives, for real $\theta$,
+\[
+ \mathbb E_{P_s}e^{\theta b_{0,x}}=e^{U\theta^2/(2\beta)}
+ \frac{\operatorname{Tr}e^{-\beta(H+(U/\beta)\theta n_x)}}{\operatorname{Tr}e^{-\beta H}}.
+\]
+The Bessis--Moussa--Villani theorem, introduced by Bessis, Moussa, and Villani~\cite{bmv} and proved by Stahl~\cite{stahl}, states that for finite-dimensional Hermitian $A$ and $B\geq0$, $\operatorname{Tr}e^{A-\varepsilon B}$ is the Laplace transform of a positive measure supported in $[0,\|B\|]$. To pass from this statement to the oscillator model, let $P_N$ be the orthogonal projection onto states with at most $N$ phonons at each site, and set $H_N=P_NHP_N$ on its finite-dimensional range. Since $n_x$ commutes with $P_N$ and $\beta n_x$ has spectrum in $\{0,\beta,2\beta\}$, the theorem gives a positive measure $m_N$ on $[0,2\beta]$ such that
+\[
+ \operatorname{Tr}e^{-\beta(H_N+\varepsilon n_x)}=\int_0^{2\beta}e^{-\varepsilon s}\,dm_N(s).
+\]
+Finite-phonon vectors are a form core: each linear oscillator coordinate is infinitesimally form-bounded relative to the oscillator number operator, and the electronic occupation is bounded. The same is true after adding $\varepsilon n_x$. The min--max principle for these increasing finite-dimensional compressions therefore gives $\lambda_j(H_N+\varepsilon n_x)\downarrow\lambda_j(H+\varepsilon n_x)$, and dominated convergence of the Gibbs trace gives convergence of the traces. Since $m_N$ is supported on the compact interval $[0,2\beta]$ and its mass tends to $\operatorname{Tr}e^{-\beta H}$, a weakly convergent subsequence yields a positive measure $\widetilde m_x$ satisfying
+\[
+ \frac{\operatorname{Tr}e^{-\beta(H+\varepsilon n_x)}}{\operatorname{Tr}e^{-\beta H}}
+ =\int_0^{2\beta}e^{-\varepsilon s}\,d\widetilde m_x(s).
+\]
+Combining this identity with the Gaussian-shift formula shows equality of moment-generating functions, hence
+\[
+ b_{0,x}\overset{d}=G-\frac{U}{\beta}S,\qquad G\sim N(0,U/\beta),\quad S\sim\widetilde m_x,\quad G\perp S.
+\]
+Differentiation at $\varepsilon=0$ gives $\mathbb E S=\beta\langle n_x\rangle$ and $\mathbb E S^2=\beta^2(n_x,n_x)_{\rm Duh}$, where
+\[
+ (A,B)_{\rm Duh}:=\beta^{-1}\int_0^\beta\langle e^{uH}Ae^{-uH}B\rangle\,du.
+\]
+
+For $0<\kappa<\eta$, independence and $\mathbb P(|G|>\kappa)\leq2e^{-\beta\kappa^2/(2U)}$ imply
+\[
+\begin{aligned}
+\left(1-2e^{-\beta\kappa^2/(2U)}\right)\widetilde m_x\left(\left|\mu+\frac{U}{\beta}S\right|<\eta-\kappa\right)
+&\leq \mathbb P_s(|b_{0,x}-\mu|<\eta)\\
+&\leq2e^{-\beta\kappa^2/(2U)}+\widetilde m_x\left(\left|\mu+\frac{U}{\beta}S\right|<\eta+\kappa\right).
+\end{aligned}
+\]
+The corresponding second-moment identity is
+\[
+ \int\frac{s(2\beta-s)}{\beta^2}\,d\widetilde m_x(s)
+ =\mathbb P(n_x=1)+\langle\delta n_x^2\rangle-(\delta n_x,\delta n_x)_{\rm Duh},\qquad
+ \delta n_x=n_x-\langle n_x\rangle.
+\]
+Indeed, differentiating the Laplace transform makes the left side $2\langle n_x\rangle-(n_x,n_x)_{\rm Duh}$. Separating $\langle n_x(2-n_x)\rangle=\mathbb P(n_x=1)$ gives the formula; the remaining Duhamel deficit is nonnegative because its spectral weights are logarithmic means, bounded above by the arithmetic means defining the thermal variance. Since $s(2\beta-s)/\beta^2\geq3/4$ when $|s/\beta-1|\leq1/2$, this bounds that middle occupation mass by four thirds of the right side. It is a single-site estimate, not a joint large-deviation bound. At zero hopping and $\mu=-U$, the sites decouple and the gapped event has vanishing probability as volume grows; no extension to positive hopping is claimed here.
+\section{A star witness for determinant zeros}
+
+The lower endpoint $\pi$ from Lemma~\ref{lem:pi} is sharp for rotating two-level fields. For the Holstein site-field problem, hopping supplies the rotation on a four-site star.
+
+\begin{lemma}[Zero-mode geometry of $K_{1,3}$]\label{lem:star}
+Let $S=\{c,1,2,3\}$ be a star with centre $c$, three nonadjacent leaves, and $h_S=-t\Ad_S$. Then
+\[
+ \spec(h_S)=\{-\sqrt3t,0,0,\sqrt3t\},\qquad
+ \ker h_S=\{w:w_c=0,\ w_1+w_2+w_3=0\}.
+\]
+For the six leaf sign patterns
+\[
+ (1,-1,-1),\ (1,1,-1),\ (-1,1,-1),\ (-1,1,1),\ (-1,-1,1),\ (1,-1,1),
+\]
+the projected site fields on the two-dimensional zero-mode space are traceless parts of magnitude $2V/3$, with successive directions separated by $60$ degrees. Each leaf has time average zero over the cycle.
+\end{lemma}
+
+\begin{theorem}[Z: A time-mean-zero determinant zero]\label{thm:Z}
+On the isolated star, apply the six patterns of Lemma~\ref{lem:star} on six equal subintervals, with field amplitude $V$ on the leaves and zero field on the centre. The isolated-star determinant is positive at $\beta V=3$ and negative at $\beta V=5$ for $\beta t=40$; for $\beta t=100,1000$ the positive endpoint is $\beta V=49/10$ and the negative endpoint remains $5$. Consequently, for each $\beta t\in\{40,100,1000\}$, some time-mean-zero history has $\det(1+U_{0,v})=0$ with $\beta\|v\|_\infty<5$. The same sign change persists on any finite graph of maximal degree at most four containing an induced $K_{1,3}$ when the static fields on the other sites are sufficiently large positive. On the $4\times4$ torus at $t=1$ and $\beta=40$, the explicit reference $W_x=1/200$ on the star and $W_x=400$ elsewhere gives positive determinant at $\beta V=3$ and negative determinant at $\beta V=5$.
+\end{theorem}
+
+\begin{proof}[Proof and computational certificate]
+The star geometry follows by exact rational projection onto the two-dimensional zero-mode space. The endpoint signs are checked by interval arithmetic on the piecewise-constant time-ordered products: on the isolated star the lower and upper endpoints are those stated in Theorem~\ref{thm:Z}; on the $4\times4$ torus the check uses $t=1$, $\beta=40$, and the displayed reference. The intermediate value theorem gives a zero. Frozen-site decoupling proves persistence on a finite graph for sufficiently large positive exterior static fields. This proof does not require a claim that the star is a minimal witness or a closed-form value for the first crossing.
+\end{proof}
+
+\begin{corollary}[Invertibility bracket from Theorem Z]\label{cor:kappa}
+Define $\Kinv(\beta t)$ as the supremum of all $\kappa$ for which $\det(1+U_{W,v})\ne0$ for every finite graph, every static reference $W$, and every measurable history satisfying $\beta\|v\|_\infty\leq\kappa$. For $\beta t\in\{40,100,1000\}$,
+\[
+ \pi\leq\Kinv(\beta t)\leq5.
+\]
+The lower bound holds for arbitrary Hermitian time-dependent perturbations, and the upper bound is witnessed by the mean-zero Holstein site fields in Theorem~\ref{thm:Z}.
+\end{corollary}
+
+\begin{corollary}[Mollified witnesses and free-law singularity]\label{cor:sing}
+For a fixed static reference $W$ from Theorem~\ref{thm:Z}, the free dynamic Gaussian law assigns positive probability to histories with negative single-spin determinant. With $G_v=(1+U_{W,v})^{-1}$ defined off the zero set,
+\[
+ \E_{\free}\!\left[\|G_v\|^2\mid b_0=\mu+W\right]=\infty,\qquad
+ \E_{\free}\!\left[\max_{x,y}|\langle\Delta_x^\dagger\Delta_y\rangle_v|\mid b_0=\mu+W\right]=\infty.
+\]
+The true spinful Holstein measure gives positive probability to negative single-spin determinant and to arbitrarily large normalized conditional pair correlations.
+\end{corollary}
+
+\begin{proof}[Proof summary]
+Set $F(v)=\det(1+U_{W,v})$. It is locally Lipschitz in the $L^1$ history norm by Duhamel's formula. Mollifying the piecewise-constant witness on the time circle gives a smooth mean-zero history $e$ with $F(e)<0$ and $\|e\|_\infty\leq\|v\|_\infty$, while $F(0)>0$. Analyticity of $s\mapsto F(se)$ supplies $0<s_1<s_2\leq1$ with opposite signs.
+The free dynamic Gaussian has continuous paths and Cameron--Martin space the mean-zero $H^1$ histories, which contains $e$. Write $v=v'+\xi e/\|e\|_H^2$, where $\xi\sim N(0,\|e\|_H^2)$ is independent of the centered Gaussian remainder $v'$. For some $\varepsilon>0$, the signs at $s_1e,s_2e$ persist after every perturbation of sup norm at most $\varepsilon$; the event $\|v'\|_\infty\leq\varepsilon$ has positive probability. On it, the scalar line has a sign-changing zero $\xi_z$ in a fixed bounded interval. Since $1+U_{v_z}$ is singular, $\sigma_{\min}(1+U_v)\leq\|U_v-U_{v_z}\|\leq C|\xi-\xi_z|$ locally. Thus $\|G_v\|\geq[C|\xi-\xi_z|]^{-1}$, whose square has infinite integral against the scalar Gaussian density, bounded below on that interval.
+The Wick identity also gives $\max_{x,y}|\langle\Delta_x^\dagger\Delta_y\rangle_v|\geq(\|G_v\|/|\Lambda|-1)^2$ once $\|G_v\|\geq|\Lambda|$, so its conditional expectation diverges as well. Under the true spinful measure, the static marginal has density proportional to $e^{-\beta|b_0|^2/(2U)}\E_{\rm dyn}[F(v)^2]$, which is strictly positive near the reference. The sign-changing and arbitrarily large-correlation events are open and have positive weight where $F\ne0$, since the full weight is $F^2$. These are finite-volume conditional-history statements, not claims of thermodynamic pair order.
+\end{proof}
+
+\begin{corollary}[Gauge invariance of the determinant zero]\label{cor:gauge}
+Let $\Lambda(u)=\diag(e^{\lambda_x(u)})$ be a periodic diagonal similarity transformation. It conjugates the one-particle evolution to $\Lambda(0)^{-1}U\Lambda(0)$ and hence leaves $\det(1+U)$ invariant while conjugating $G$. In particular, neither a static diagonal twist nor the time-dependent Lang--Firsov change of variables removes the zero; the conditional singularity remains under either change of representation.
+\end{corollary}
+
+\begin{corollary}[Failure of dynamic-action convexity]\label{cor:convex}
+For a witness reference, define
+\[
+ \Gamma(v)=-\log\det(1+U_{W,v})^2.
+\]
+Along the line through the mollified mean-zero witness, $\Gamma$ is finite on both sides of an interior zero and equals $+\infty$ there. Neither $\Gamma$ nor its sum with the finite Gaussian quadratic action is convex or quasi-convex on the corresponding sup-norm ball.
+\end{corollary}
+
+\begin{corollary}[Cutoff ceiling for the two-thirds-power sup-norm family]\label{cor:cutoff}
+The conclusion here is limited to the cutoff family underlying the published two-thirds-power bound~\cite{linear4}, with (i) a sup-norm cutoff $\beta\|v\|_\infty\leq\kappa$, (ii) retained-site Wick or Green control uniform over static references, and (iii) free-law probabilities as the Peierls weights of excluded sites. Because its cutoff is fixed independently of $\beta$, the determinant-zero witness at $\beta t=40$ forces any such method to choose $\kappa<5$ for its invertibility cutoff. Under the free dynamic law, the variance in \eqref{eq:sigma} obeys, for $a<\sqrt{60}$,
+\[
+ \frac{U\Omega^2\beta}{12}\left(1-\frac{a^2}{60}\right)\leq\sigma^2\leq\frac{U\Omega^2\beta}{12}.
+\]
+Writing $z=\tau^3/(U\Omega^2)$, the per-site excluded event $E_x=\{\beta\sup_u|v_x(u)|>\kappa\}$ satisfies
+\[
+ \mathbb P_{\free}(E_x)\geq
+ \erfc\!\left(\frac{\kappa\sqrt{12z}}{\sqrt{2(1-a^2/60)}}\right).
+\]
+These events are independent across sites under the free law, and this lower bound tends to one as $z\to0$. Thus this specified cutoff family cannot reach the linear scale $\tau=C\Omega$ as $\Omega\to0$ at fixed $U,C>0$; its required scale is $\tau^3\gtrsim U\Omega^2/(12\kappa^2)$ with $\kappa<5$. This is a restriction on that family, not on every per-history method and not a statement about the model's actual pair-ordering temperature.
+\end{corollary}
+
+\begin{proof}
+The variance bracket follows from the Mittag--Leffler expansion of $x\coth x-1$. Since $\{\beta\sup_u|v_x(u)|>\kappa\}$ contains the equal-time event $\{\beta|v_x(0)|>\kappa\}$, the Gaussian tail gives the displayed lower bound. At $\tau=C\Omega$, one has $a=1/C$ and $z=C^3\Omega/U\to0$; for $C>1/\sqrt{60}$ the displayed lower bound tends to one. For every $C>0$, directly $\beta^2\sigma^2=\frac{U}{C\Omega}\left[\frac a2\coth\left(\frac a2\right)-1\right]\to\infty$ as $\Omega\to0$, so $\mathbb P_{\free}(E_x)\geq\erfc\left(\frac{\kappa}{\sqrt{2}\beta\sigma}\right)\to1$. This proves the exclusion needed for the stated family at every $C>0$.
+\end{proof}
+
+\section{Static twists, Ward input, and static marginal}
+
+\subsection{The Koma--Tasaki twist is independent of phonon frequency}
+
+Let $\ell$ be the side of a square torus, let $x,y$ have graph distance $\rho$, and suppose $\ell\geq2\rho+2$. Consider a semibounded self-adjoint Hamiltonian with trace-class Gibbs operator, written
+\[
+ H=H_{\mathrm{hop}}+H_{\mathrm{rest}},\qquad
+ H_{\mathrm{hop}}=-t\sum_{\langle zw\rangle,\sigma}(c_{z\sigma}^\dagger c_{w\sigma}+c_{w\sigma}^\dagger c_{z\sigma}),
+ \qquad [H_{\mathrm{rest}},n_z]=0\quad\text{for every }z.
+\]
+Assume the finite-phonon-number subspace $D_{\mathrm{fin}}$ is a core. This includes the Holstein model at arbitrary $\Omega,F,\mu$, as well as density-diagonal interactions for which the stated operator hypotheses hold.
+The complex diagonal twist is the Koma--Tasaki method; our statement records its phonon-independent bound under the hypotheses above~\cite{koma}.
+
+\begin{theorem}[W: Static diagonal twist bound]\label{thm:W}
+For $\Delta_x=c_{x\downarrow}c_{x\uparrow}$,
+\[
+ |\langle\Delta_x^\dagger\Delta_y\rangle_\beta|
+ \leq(2\rho+1)^{-\theta},\qquad
+ \theta=\frac{2-\cosh(1)}{8\max(\beta t,1/4)}.
+\]
+The bound is independent of $\Omega,F,\mu$ and of the density-diagonal part of $H$.
+\end{theorem}
+
+\begin{proof}[Proof summary]
+First truncate phonon number by $P_N$ and conjugate the finite-dimensional compression by the static diagonal operator $G_\phi=\exp(-\sum_z\phi_zn_z)$. The pair observable contributes the factor $e^{-2(\phi_y-\phi_x)}$. The Hermitian part of the twisted hopping costs at most $2tE(\phi)$, where
+\[
+ E(\phi)=\sum_{\langle zw\rangle}\bigl(\cosh(\phi_z-\phi_w)-1\bigr),
+\]
+while the remaining part of the Hamiltonian is unchanged. A Lie--Trotter and Schatten--H\"older bound yields
+\[
+ |\langle\Delta_x^\dagger\Delta_y\rangle_N|
+ \leq\exp\{-2(\phi_y-\phi_x)+2\beta t E(\phi)\}.
+\]
+For $A=R+iI$ with $R,I$ Hermitian, Lie--Trotter and Schatten--H\"older give $\|e^A\|_1\leq\Tr e^R$. The twisted hopping has Hermitian part bounded below by $-2tE(\phi)$, so this trace inequality, Weyl monotonicity, and $\|\Delta_x^\dagger\Delta_y\|\leq1$ give the displayed estimate.
+For the unbounded-phonon limit, let $P_N$ be the orthogonal projection onto states with at most $N$ phonons at each site, and set $H_N=P_NHP_N$ on its finite-dimensional range. Extend this compression by $\widehat H_N=H_N\oplus N(1-P_N)$. The range of $P_N$ lies in $D_{\mathrm{fin}}$, and each $\widehat H_N$ is bounded self-adjoint, so $D_{\mathrm{fin}}$ is a common core for $H$ and $\widehat H_N$.
+
+For each $\psi\in D_{\mathrm{fin}}$, once $N$ exceeds its phonon support, $\widehat H_N\psi=P_NH\psi\to H\psi$ in norm. The common-core criterion~\cite[Sec.~VIII.7]{reedSimon} gives strong-resolvent convergence. Put $E_0:=\inf\spec H$. Since $E_0\leq\inf\spec\widehat H_N$ for $N\geq E_0$, bounded continuous functional calculus for strong-resolvent convergence, applied to $f(\lambda)=e^{-\beta\max(\lambda,E_0)}$, gives $e^{-\beta\widehat H_N}\to e^{-\beta H}$ strongly. With $\rho_N=e^{-\beta H_N}P_N$, $\|e^{-\beta\widehat H_N}-\rho_N\|=e^{-\beta N}\to0$, hence $\rho_N\to e^{-\beta H}$ strongly.
+
+Min--max gives $\Tr\rho_N\leq\Tr e^{-\beta H}$. For every finite-rank orthogonal projection $Q$, positivity gives $\Tr\rho_N\geq\Tr(Q\rho_NQ)$; strong convergence on $\operatorname{Ran}Q$ yields the reverse limiting inequality after taking the supremum over such $Q$, and hence trace convergence. A finite-rank truncation and Cauchy--Schwarz on the trace tails then pass the numerator to the limit.
+
+For the spatial profile set $g(k)=\sum_{j<k}(2j+1)^{-1}$, $m=\max(\beta t,1/4)$, $\eta=1/(4m)$, and $\phi_z=\eta g(\min(\dist(x,z),\rho))$. There are exactly $4(2k+1)$ bonds between shells $k$ and $k+1$ for $k<\rho$, and none within a shell, so $E(\phi)\leq2\eta^2\cosh(\eta)g(\rho)$. Since $2\beta t\eta\leq1/2$, $\eta\leq1$, and $g(\rho)\geq\frac12\log(2\rho+1)$, the exponent is at most $-\frac{2-\cosh(1)}{8m}\log(2\rho+1)$, as claimed.
+\end{proof}
+
+For a static twist with $L=\phi_y-\phi_x$, the same estimate is bounded below by the effective-resistance cost:
+\begin{lemma}[W$'$: Static twist bound]\label{lem:Wprime}
+On a unit-conductance graph,
+\[
+ -2L+2\beta tE(\phi)
+ \geq -2L+\frac{\beta tL^2}{R_{\eff}(x,y)}
+ \geq-\frac{R_{\eff}(x,y)}{\beta t}.
+\]
+Therefore optimizing this static diagonal twist alone gives at best a power-law bound when $R_{\eff}(x,y)$ grows logarithmically with distance, as on the two-dimensional square lattice.
+\end{lemma}
+
+\begin{proof}
+Use $\cosh s-1\geq s^2/2$ and Dirichlet's principle, $\sum_{\langle zw\rangle}(\phi_z-\phi_w)^2\geq L^2/R_{\eff}(x,y)$. Completing the square in $L$ yields the final inequality. Standard bounds on square-lattice effective resistance are described by Doyle and Snell~\cite{doyleSnell}. For the lower bound, the Nash--Williams inequality applied to the edge boundaries of the concentric $\ell^\infty$ squares $\{z:\|z-x\|_\infty\leq k\}$, which are disjoint cutsets of size $8k+4$ separating $x$ from $y$ for $k<\|y-x\|_\infty$, gives $R_{\eff}(x,y)\geq\sum_{k=0}^{\lceil d(x,y)/2\rceil-1}(8k+4)^{-1}\sim\frac18\log d(x,y)$.
+\end{proof}
+
+\begin{remark}[Scope of charge/Ward input]
+For $C=\sum_z e^{iqz}n_z$, the double commutator satisfies
+\[
+ [[C,H],C^\dagger]=[[C,H_{\mathrm{hop}}],C^\dagger]
+\]
+when $[H_{\mathrm{rest}},n_z]=0$. Only bounds whose Hamiltonian dependence is reduced to this identity and a bound in terms of $\|H_{\mathrm{hop}}\|$ inherit this $\Omega$-blindness. The identity does not make exact Ward correlators or other inputs independent of $\Omega$. This is not a theorem about every Bogoliubov inequality or every use of a Ward identity, and it does not extend Lemma~\ref{lem:Wprime} beyond Koma--Tasaki static diagonal twists.
+\end{remark}
+
+\subsection{Non-log-concavity of the static marginal}
+
+Let $p_s(b)$ be the density of the static coordinates under the full Gibbs measure, and set $S_z=\int_0^\beta n_z(u)\,du$. At fixed static field $b$, let $\operatorname{Cov}_b(S)$ denote the covariance matrix in the corresponding conditional law.
+
+\begin{lemma}[C: Atomic non-log-concavity of the static marginal]\label{lem:C}
+The static density obeys
+\[
+ -\nabla^2\log p_s(b)=\frac{\beta}{U}I-\operatorname{Cov}_b(S).
+\]
+At $t=0$ and $\mu=-U$, the single-site occupation weights are proportional to $(1,2e^{-\beta U/2},1)$. At $b=-U$, the posterior weights are $(1,2,1)/4$, so $\operatorname{Var}(n)=1/2$ and
+\[
+ -\partial_b^2\log p_s(-U)=\frac{\beta}{U}\left(1-\frac{\beta U}{2}\right)<0\qquad(\beta U>2).
+\]
+Thus the static marginal is not log-concave for $\beta U>2$ in the atomic limit. For each fixed finite volume and these parameters, non-log-concavity persists for sufficiently small positive $t$ by continuity; the size of that interval may depend on the volume.
+\end{lemma}
+
+\begin{proof}
+The density has the form $p_s(b)\propto e^{-\beta|b|^2/(2U)}Z(b)$. Differentiating the logarithm of the conditional electronic trace gives $\nabla\log Z=-\langle S\rangle_b$ and $\nabla^2\log Z=\operatorname{Cov}_b(S)$. At zero hopping the occupations are conserved and sites decouple. Direct evaluation of the four local states, with the two singly occupied spin states counted separately, gives the stated prior and posterior distributions and their variance. A negative Hessian direction violates log-concavity. Smooth dependence of the finite-volume density on $t$ gives the final continuity statement.
+\end{proof}
+
+\section{The remaining route}
+
+The results above explain why the gap-conditioned expansion, a free-law per-history cutoff, static diagonal twists, and convexity tools do not by themselves complete a proof at the linear scale. They do not close every possible route. A remaining candidate is to estimate the dynamic expansion after annealing with the full spinful weight. Near a determinant zero, the normalized Green function diverges, but expressions multiplied by $\det(1+U)^2$ can instead be written in terms of adjugate minors, which remain bounded in each finite dimension.
+
+The needed statement is a volume-uniform bound on the annealed ratio
+\[
+ \frac{\E_{\free}\!\left[\det(1+U_v)^2\,\mathcal W_v\right]}
+ {\E_{\free}\!\left[\det(1+U_v)^2\right]},
+\]
+where $\mathcal W_v$ denotes the relevant Wick minors or polymer activities near non-gapped clusters, together with a static estimate controlling how such clusters occur. Neither this determinant-squared-weighted estimate nor the joint static suppression estimate $(P_{\mathrm{loc}})$ is established here. They are the remaining mathematical tasks; no linear-in-frequency pairing bound follows from their being plausible.
+
+\section{Claims and limits}
+
+The claims proved in this paper are finite-volume determinant and twist statements, a conditional clustering theorem, and a static-marginal curvature calculation. Their hypotheses are part of the statements: Theorem~\ref{thm:C} is conditioned on all static sites being gapped; Theorem~\ref{thm:Z} is a constructed star history; Corollary~\ref{cor:cutoff} concerns only the specified sup-norm cutoff family underlying the published two-thirds-power bound~\cite{linear4}; Theorem~\ref{thm:W} is a static diagonal twist bound; Lemma~\ref{lem:Wprime} limits that twist optimization; and Lemma~\ref{lem:C} gives an atomic non-log-concavity example, with a finite-volume small-hopping continuation. None is a theorem that all approaches to the Holstein pairing question fail. The annealed determinant-squared-weighted route remains unresolved.
+
+\section*{Acknowledgments and disclosures}
+
+AI agents generated the proofs, code and drafts under D. Rens' direction, and separate AI agents carried out the independent reviews.
+
+This preprint has not been peer reviewed.
+
+\bibliographystyle{plain}
+\bibliography{refs}
+\end{document}
